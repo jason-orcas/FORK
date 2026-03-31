@@ -245,4 +245,4 @@ def generate_report(data: FenceReportData) -> bytes:
         )
 
     # Return bytes
-    return pdf.output()
+    return bytes(pdf.output())

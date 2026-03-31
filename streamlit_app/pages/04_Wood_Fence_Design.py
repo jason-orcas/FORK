@@ -132,7 +132,7 @@ if st.button("Calculate", type="primary"):
                 "PASS" if result.shear_ratio <= 1.0 else "FAIL",
             ],
         }
-        st.dataframe(pd.DataFrame(stress_data), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(stress_data), width="stretch", hide_index=True)
 
         # Adjustment factors
         st.subheader("NDS Adjustment Factors")
@@ -147,7 +147,7 @@ if st.button("Calculate", type="primary"):
                           "NDS Table 6.3.1", "NDS 3.7.1", "NDS 6.3.11",
                           "NDS 3.3.3", "NDS 3.10.4"],
         }
-        st.dataframe(pd.DataFrame(factors_data), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(factors_data), width="stretch", hide_index=True)
 
         # Combined stress and deflection
         st.subheader("Combined Check")
