@@ -331,3 +331,7 @@ class FenceReportData:
     # Footing
     footing_input: FootingInput | None = None
     footing_result: FootingResult | None = None
+    # Optimizer results (list of dicts for PDF table)
+    optimizer_results: list | None = None
+    # Fence run results (dict for PDF table)
+    fence_run_result: object | None = None

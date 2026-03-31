@@ -34,6 +34,11 @@ SAVEABLE_KEYS = [
     # Footing
     "ft_method", "ft_soil_bearing", "ft_footing_diam",
     "ft_fence_height", "ft_actual_depth",
+    # Optimizer
+    "opt_fence_height", "opt_wind_speed", "opt_exposure", "opt_ice",
+    "opt_wire_gauge", "opt_mesh_size", "opt_mesh_weight",
+    "opt_wire_diam", "opt_wood_mesh_size", "opt_wood_spacing",
+    "opt_soil_bearing", "opt_footing_diam", "opt_fos",
 ]
 
 

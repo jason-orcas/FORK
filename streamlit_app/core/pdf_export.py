@@ -244,5 +244,82 @@ def generate_report(data: FenceReportData) -> bytes:
             fr.is_adequate,
         )
 
+    # --- Optimizer Results ---
+    if data.optimizer_results:
+        pdf.add_page()
+        pdf._section_title("7. Post Optimization Results")
+        pdf.set_font("Helvetica", "", 9)
+        pdf.multi_cell(0, 5,
+            "Exhaustive sweep of all available post sizes. "
+            "Ranked by lightest weight, then maximum spacing.")
+        pdf.ln(3)
+
+        # Table header depends on fence type
+        if data.fence_type == FenceType.CHAIN_LINK:
+            widths = [10, 30, 18, 18, 22, 22, 22, 22]
+            pdf._table_header(
+                ["", "Group", "Size", "Wt(plf)", "S'(ft)", "M-Ratio", "D(ft)", "Status"],
+                widths,
+            )
+            for r in data.optimizer_results:
+                status = "PASS" if r.get("passes") else "FAIL"
+                color = _GREEN if r.get("is_optimal") else (
+                    _ALT_ROW if r.get("passes") else _RED)
+                pdf._table_row([
+                    "*" if r.get("is_optimal") else "",
+                    r.get("post_group", "")[:20],
+                    str(r.get("trade_size", "")),
+                    f"{r.get('weight_plf', 0):.1f}",
+                    f"{r.get('max_spacing', 0):.1f}",
+                    f"{r.get('moment_ratio', 0):.3f}",
+                    f"{r.get('footing_depth_ft', 0):.2f}",
+                    status,
+                ], widths, fill_color=color)
+        else:
+            widths = [10, 25, 20, 25, 22, 22, 22, 22]
+            pdf._table_header(
+                ["", "Diameter", "Wt(plf)", "Combined", "Shear", "Defl(in)", "D(ft)", "Status"],
+                widths,
+            )
+            for r in data.optimizer_results:
+                status = "PASS" if r.get("passes") else "FAIL"
+                color = _GREEN if r.get("is_optimal") else (
+                    _ALT_ROW if r.get("passes") else _RED)
+                pdf._table_row([
+                    "*" if r.get("is_optimal") else "",
+                    str(r.get("trade_size", "")),
+                    f"{r.get('weight_plf', 0):.1f}",
+                    f"{r.get('combined_ratio', 0):.3f}",
+                    f"{r.get('shear_ratio', 0):.3f}",
+                    f"{r.get('deflection_in', 0):.3f}",
+                    f"{r.get('footing_depth_ft', 0):.2f}",
+                    status,
+                ], widths, fill_color=color)
+
+        pdf.ln(2)
+        pdf.set_font("Helvetica", "I", 8)
+        pdf.cell(0, 5, "* = Optimal (lightest passing post)", new_x="LMARGIN", new_y="NEXT")
+
+    # --- Fence Run Results ---
+    if data.fence_run_result:
+        pdf.add_page()
+        pdf._section_title("8. Fence Run Quantity Takeoff")
+        fr = data.fence_run_result
+
+        pdf._kv_row("Line Posts:", str(getattr(fr, 'num_line_posts', 0)))
+        pdf._kv_row("Pull/Terminal Posts:", str(getattr(fr, 'num_pull_posts', 0)))
+        pdf._kv_row("Gate Posts:", str(getattr(fr, 'num_gate_posts', 0)))
+        pdf._kv_row("Total Posts:", str(getattr(fr, 'total_posts', 0)))
+        pdf.ln(3)
+
+        pdf._kv_row("Fence Fabric:", f"{getattr(fr, 'fabric_length_ft', 0):.0f} LF")
+        pdf._kv_row("Fabric Area:", f"{getattr(fr, 'fabric_area_sqft', 0):.0f} SF")
+        pdf._kv_row("Top Rail:", f"{getattr(fr, 'top_rail_length_ft', 0):.0f} LF")
+        pdf.ln(3)
+
+        pdf._kv_row("Concrete (Total):", f"{getattr(fr, 'concrete_total_cuft', 0):.1f} CF "
+                     f"({getattr(fr, 'concrete_total_cuyd', 0):.2f} CY)")
+        pdf._kv_row("Steel Weight (approx.):", f"{getattr(fr, 'total_steel_lbs', 0):.0f} lbs")
+
     # Return bytes
     return bytes(pdf.output())
