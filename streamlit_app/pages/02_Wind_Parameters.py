@@ -14,6 +14,10 @@ st.header("Wind Parameters")
 
 asce = st.session_state.asce_edition
 
+# Apply pending auto-Kz value BEFORE the widget renders
+if "_auto_kz" in st.session_state:
+    st.session_state.Kz = st.session_state.pop("_auto_kz")
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -54,12 +58,12 @@ with col2:
         help="ASCE 7 Table 26.10-1. Auto-lookup available below.",
     )
 
-    # Auto Kz lookup
+    # Auto Kz lookup — sets a flag and reruns; value applied at top of page
     exp_enum = ExposureCategory(st.session_state.exposure_category)
     if st.button("Auto-calculate Kz from Exposure & Height"):
         height = st.session_state.get("cl_post_height", 7.0)
         auto_kz = get_kz(exp_enum, height)
-        st.session_state.Kz = round(auto_kz, 2)
+        st.session_state["_auto_kz"] = round(auto_kz, 2)
         st.rerun()
 
 with col3:
