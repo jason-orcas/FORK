@@ -12,7 +12,7 @@ from core.wind import calculate_velocity_pressure, get_kz
 
 st.header("Wind Parameters")
 
-asce = st.session_state.asce_edition
+asce = st.session_state.get("asce_edition", "ASCE 7-22")
 
 # Apply pending auto-Kz value BEFORE the widget renders
 if "_auto_kz" in st.session_state:
@@ -109,6 +109,6 @@ if st.button("Calculate Velocity Pressure", type="primary"):
     st.success(f"**qz = {result.qz:.2f} psf**")
     st.code(result.formula_used, language=None)
 
-elif st.session_state.wind_result is not None:
-    r = st.session_state.wind_result
+elif st.session_state.get("wind_result") is not None:
+    r = st.session_state.get("wind_result")
     st.info(f"**Previous result: qz = {r.qz:.2f} psf** ({r.asce_edition.value})")

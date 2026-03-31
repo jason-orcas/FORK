@@ -13,11 +13,11 @@ st.header("Export Report")
 st.subheader("Analysis Status")
 
 checks = {
-    "Wind Parameters": st.session_state.wind_result is not None,
-    "Chain Link Design": st.session_state.cl_result is not None,
-    "Wood Fence Design": st.session_state.wood_result is not None,
-    "Post Spacing (CLFMI)": st.session_state.spacing_result is not None,
-    "Footing Design": st.session_state.footing_result is not None,
+    "Wind Parameters": st.session_state.get("wind_result") is not None,
+    "Chain Link Design": st.session_state.get("cl_result") is not None,
+    "Wood Fence Design": st.session_state.get("wood_result") is not None,
+    "Post Spacing (CLFMI)": st.session_state.get("spacing_result") is not None,
+    "Footing Design": st.session_state.get("footing_result") is not None,
 }
 
 for name, done in checks.items():
@@ -33,32 +33,32 @@ st.divider()
 if any_complete:
     st.subheader("Report Summary")
 
-    if st.session_state.wind_result:
-        wr = st.session_state.wind_result
+    wr = st.session_state.get("wind_result")
+    if wr:
         st.write(f"**Wind:** qz = {wr.qz:.2f} psf ({wr.asce_edition.value})")
 
-    if st.session_state.cl_result:
-        cr = st.session_state.cl_result
+    cr = st.session_state.get("cl_result")
+    if cr:
         status = "PASS" if cr.is_adequate else "FAIL"
         st.write(f"**Chain Link:** Axial={cr.axial_load:.1f} lb, "
                  f"Shear={cr.shear:.1f} lb, Moment={cr.moment:.1f} lb-ft, "
                  f"Ratio={cr.moment_ratio:.3f} [{status}]")
 
-    if st.session_state.wood_result:
-        wd = st.session_state.wood_result
+    wd = st.session_state.get("wood_result")
+    if wd:
         status = "PASS" if wd.is_adequate else "FAIL"
         st.write(f"**Wood Fence:** Axial={wd.axial_load:.1f} lb, "
                  f"Shear={wd.shear:.1f} lb, Moment={wd.moment:.1f} lb-ft, "
                  f"Combined Ratio={wd.combined_ratio:.3f} [{status}]")
 
-    if st.session_state.spacing_result:
-        sr = st.session_state.spacing_result
+    sr = st.session_state.get("spacing_result")
+    if sr:
         status = "ADEQUATE" if sr.is_adequate else "NOT ADEQUATE"
         st.write(f"**Spacing:** S'={sr.S_prime_calc:.1f} ft, "
                  f"Actual={sr.actual_spacing:.1f} ft [{status}]")
 
-    if st.session_state.footing_result:
-        fr = st.session_state.footing_result
+    fr = st.session_state.get("footing_result")
+    if fr:
         status = "ADEQUATE" if fr.is_adequate else "NOT ADEQUATE"
         st.write(f"**Footing:** D(req)={fr.D_calc:.2f} ft, "
                  f"D(actual)={fr.D_actual:.2f} ft [{status}]")
