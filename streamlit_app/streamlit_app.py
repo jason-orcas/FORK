@@ -83,6 +83,20 @@ def init_session_state():
         "ft_footing_diam": 1.5,
         "ft_fence_height": 7.0,
         "ft_actual_depth": 4.0,
+        # Optimizer
+        "opt_fence_height": 7.0,
+        "opt_wind_speed": 115.0,
+        "opt_exposure": "C",
+        "opt_ice": "none",
+        "opt_wire_gauge": 11,
+        "opt_mesh_size": 2.0,
+        "opt_mesh_weight": 0.154,
+        "opt_wire_diam": 0.192,
+        "opt_wood_mesh_size": 5.5,
+        "opt_wood_spacing": 10.0,
+        "opt_soil_bearing": 200.0,
+        "opt_footing_diam": 1.5,
+        "opt_fos": 1.5,
         # Results
         "wind_result": None,
         "cl_result": None,
@@ -110,6 +124,7 @@ pages = {
     "Analysis": [
         st.Page("pages/05_Post_Spacing.py", title="Post Spacing (CLFMI)", icon="\U0001f4cf"),
         st.Page("pages/06_Footing_Design.py", title="Footing Design", icon="\U0001f9f1"),
+        st.Page("pages/08_Optimizer.py", title="Optimizer", icon="\u2699"),
     ],
     "Output": [
         st.Page("pages/07_Export_Report.py", title="Export Report", icon="\U0001f4c4"),
