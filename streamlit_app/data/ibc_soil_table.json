@@ -1,0 +1,11 @@
+{
+  "_source": "IBC 2009/2018 Table 1806.2 — Presumptive Load-Bearing Values of Foundation Materials",
+  "_notes": "Lateral bearing may be increased by tabular value per additional foot of depth (up to 15x). IBC 1806.3.4: isolated poles (fence posts) may use 2x lateral bearing for short-term loads.",
+  "soil_types": [
+    {"name": "Crystalline bedrock", "lateral_psf_per_ft": 1200, "vertical_psf": 12000, "uscs": ""},
+    {"name": "Sedimentary/foliated rock", "lateral_psf_per_ft": 400, "vertical_psf": 4000, "uscs": ""},
+    {"name": "Sandy gravel / gravel (GW, GP)", "lateral_psf_per_ft": 200, "vertical_psf": 3000, "uscs": "GW, GP"},
+    {"name": "Sand, silty sand, clayey sand (SW, SP, SM, SC)", "lateral_psf_per_ft": 150, "vertical_psf": 2000, "uscs": "SW, SP, SM, SC, GM, GC"},
+    {"name": "Clay, sandy clay, silty clay, silt (CL, ML, MH, CH)", "lateral_psf_per_ft": 100, "vertical_psf": 1500, "uscs": "CL, ML, MH, CH"}
+  ]
+}

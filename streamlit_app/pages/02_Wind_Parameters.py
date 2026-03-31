@@ -112,3 +112,38 @@ if st.button("Calculate Velocity Pressure", type="primary"):
 elif st.session_state.get("wind_result") is not None:
     r = st.session_state.get("wind_result")
     st.info(f"**Previous result: qz = {r.qz:.2f} psf** ({r.asce_edition.value})")
+
+# Wind speed reference
+with st.expander("Wind Speed Reference"):
+    st.markdown(
+        "**ASCE 7 Hazard Tool:** Use the official tool to look up site-specific "
+        "wind speeds by address or coordinates.\n\n"
+        "[Open ASCE 7 Hazard Tool](https://asce7hazardtool.online/)"
+    )
+    st.markdown("**Typical Ultimate Wind Speeds (ASCE 7-22, Risk Category II):**")
+    import pandas as pd
+    ref_data = {
+        "Region": [
+            "Most of continental US",
+            "Central/Northern Plains",
+            "Gulf Coast (non-hurricane)",
+            "Atlantic/Gulf hurricane zone",
+            "Florida (south of I-4)",
+            "Hawaii",
+            "Guam / US Territories",
+        ],
+        "V (mph)": [
+            "105-115",
+            "105-115",
+            "115-130",
+            "130-160",
+            "160-180",
+            "105-130",
+            "170-210",
+        ],
+    }
+    st.dataframe(pd.DataFrame(ref_data), width="stretch", hide_index=True)
+    st.caption(
+        "These are approximate ranges for Risk Category II (ASCE 7-22). "
+        "Always verify with the ASCE 7 Hazard Tool or local jurisdiction."
+    )

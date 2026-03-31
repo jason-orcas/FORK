@@ -78,6 +78,10 @@ st.number_input("Factor of Safety", key="wood_fos",
     min_value=0.5, max_value=5.0, step=0.1,
     help=f"Default: {default_fos:.1f} for {selected_type.lower()}")
 
+defl_options = {"L/60": 60, "L/120": 120, "L/180": 180, "L/240": 240, "No Limit": 0}
+defl_choice = st.selectbox("Deflection Limit", list(defl_options.keys()), index=2,
+    help="Allowable deflection = post height / selected ratio. Common: L/120 to L/240.")
+
 st.divider()
 
 if st.button("Calculate", type="primary"):
@@ -159,4 +163,23 @@ if st.button("Calculate", type="primary"):
         else:
             st.error(f"Combined Ratio = {combined:.3f} > 1.0 \u2014 **FAIL** (NDS 3.9.2)")
 
-        st.metric("Deflection at Top", f"{result.deflection:.3f} in")
+        # Deflection check
+        st.subheader("Deflection Check")
+        defl_ratio = defl_options[defl_choice]
+        height_in = st.session_state.wood_post_height * 12.0
+        if defl_ratio > 0:
+            allowable_defl = height_in / defl_ratio
+            defl_unity = result.deflection / allowable_defl if allowable_defl > 0 else 0
+            dc1, dc2, dc3 = st.columns(3)
+            dc1.metric("Actual Deflection", f"{result.deflection:.3f} in")
+            dc2.metric("Allowable ({})".format(defl_choice), f"{allowable_defl:.3f} in")
+            dc3.metric("Deflection Ratio", f"{defl_unity:.3f}")
+            if defl_unity <= 0.9:
+                st.success(f"Deflection ratio = {defl_unity:.3f} <= 1.0 - **PASS**")
+            elif defl_unity <= 1.0:
+                st.warning(f"Deflection ratio = {defl_unity:.3f} <= 1.0 - **MARGINAL**")
+            else:
+                st.error(f"Deflection ratio = {defl_unity:.3f} > 1.0 - **FAIL**")
+        else:
+            st.metric("Deflection at Top", f"{result.deflection:.3f} in")
+            st.caption("No deflection limit applied.")

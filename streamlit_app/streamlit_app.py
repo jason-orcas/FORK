@@ -126,6 +126,9 @@ pages = {
         st.Page("pages/06_Footing_Design.py", title="Footing Design", icon="\U0001f9f1"),
         st.Page("pages/08_Optimizer.py", title="Optimizer", icon="\u2699"),
     ],
+    "Planning": [
+        st.Page("pages/09_Fence_Run.py", title="Fence Run Planner", icon="\U0001f4d0"),
+    ],
     "Output": [
         st.Page("pages/07_Export_Report.py", title="Export Report", icon="\U0001f4c4"),
     ],
