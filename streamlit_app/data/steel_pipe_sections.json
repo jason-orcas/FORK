@@ -1,0 +1,14 @@
+{
+  "_source": "ASTM F1043/F1083 pipe dimensions and weights for chain link fence posts",
+  "_notes": "Schedule 40 standard weight pipe. Wall thickness and area from AISC Manual.",
+  "pipes": {
+    "1-5/8": {"OD": 1.660, "wall": 0.140, "ID": 1.380, "weight_plf": 2.27, "area_sqin": 0.669},
+    "1-7/8": {"OD": 1.900, "wall": 0.145, "ID": 1.610, "weight_plf": 2.72, "area_sqin": 0.799},
+    "2-3/8": {"OD": 2.375, "wall": 0.154, "ID": 2.067, "weight_plf": 3.65, "area_sqin": 1.075},
+    "2-7/8": {"OD": 2.875, "wall": 0.203, "ID": 2.469, "weight_plf": 5.80, "area_sqin": 1.704},
+    "3-1/2": {"OD": 3.500, "wall": 0.216, "ID": 3.068, "weight_plf": 7.58, "area_sqin": 2.228},
+    "4": {"OD": 4.000, "wall": 0.226, "ID": 3.548, "weight_plf": 9.12, "area_sqin": 2.680},
+    "6-5/8": {"OD": 6.625, "wall": 0.280, "ID": 6.065, "weight_plf": 18.97, "area_sqin": 5.581},
+    "8-5/8": {"OD": 8.625, "wall": 0.322, "ID": 7.981, "weight_plf": 28.55, "area_sqin": 8.399}
+  }
+}

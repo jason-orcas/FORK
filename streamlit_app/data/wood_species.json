@@ -1,0 +1,13 @@
+{
+  "_source": "NDS 2018 Supplement Table 6a — Round Timber Poles and Piles",
+  "Douglas Fir": {
+    "Fc_psi": 1300,
+    "Fc_perp_psi": 490,
+    "Fb_psi": 2050,
+    "Fv_psi": 160,
+    "E_psi": 1700000,
+    "Emin_psi": 690000,
+    "specific_gravity": 0.50,
+    "notes": "No. 1 Dense, NDS 2018 Supplement Table 6a"
+  }
+}

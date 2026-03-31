@@ -1,0 +1,51 @@
+{
+  "_source": "CLFMI WLG 2445 (2023), Table 16 — Line Post Material Properties",
+  "_notes": "Mallow = Fy * Sx * 0.66 / 12 (kip-ft). Em = modulus of elasticity (ksi).",
+  "Group IA Regular (30 ksi)": {
+    "standard": "ASTM F1043 Schedule 40 / ASTM F1083 Regular Grade",
+    "Fy_ksi": 30,
+    "posts": [
+      {"trade_size": "1-7/8", "OD": 1.900, "ID": 1.610, "Sx": 0.33, "Ix": 0.31, "Mallow_kipft": 0.54, "Em_ksi": 29000, "weight_plf": 2.72},
+      {"trade_size": "2-3/8", "OD": 2.375, "ID": 2.067, "Sx": 0.56, "Ix": 0.67, "Mallow_kipft": 0.93, "Em_ksi": 29000, "weight_plf": 3.65},
+      {"trade_size": "2-7/8", "OD": 2.875, "ID": 2.469, "Sx": 1.06, "Ix": 1.53, "Mallow_kipft": 1.76, "Em_ksi": 29000, "weight_plf": 5.80},
+      {"trade_size": "3-1/2", "OD": 3.500, "ID": 3.068, "Sx": 1.72, "Ix": 3.02, "Mallow_kipft": 2.84, "Em_ksi": 29000, "weight_plf": 7.58},
+      {"trade_size": "4", "OD": 4.000, "ID": 3.548, "Sx": 2.39, "Ix": 4.79, "Mallow_kipft": 3.95, "Em_ksi": 29000, "weight_plf": 9.12},
+      {"trade_size": "6-5/8", "OD": 6.625, "ID": 6.065, "Sx": 8.50, "Ix": 28.14, "Mallow_kipft": 14.02, "Em_ksi": 29000, "weight_plf": 18.97},
+      {"trade_size": "8-5/8", "OD": 8.625, "ID": 7.981, "Sx": 16.81, "Ix": 72.49, "Mallow_kipft": 27.74, "Em_ksi": 29000, "weight_plf": 28.55}
+    ]
+  },
+  "Group IA High Strength (50 ksi)": {
+    "standard": "ASTM F1043 Schedule 40 / ASTM F1083 High Strength Grade",
+    "Fy_ksi": 50,
+    "posts": [
+      {"trade_size": "1-7/8", "OD": 1.900, "ID": 1.610, "Sx": 0.33, "Ix": 0.31, "Mallow_kipft": 0.90, "Em_ksi": 29000, "weight_plf": 2.72},
+      {"trade_size": "2-3/8", "OD": 2.375, "ID": 2.067, "Sx": 0.56, "Ix": 0.67, "Mallow_kipft": 1.54, "Em_ksi": 29000, "weight_plf": 3.65},
+      {"trade_size": "2-7/8", "OD": 2.875, "ID": 2.469, "Sx": 1.06, "Ix": 1.53, "Mallow_kipft": 2.93, "Em_ksi": 29000, "weight_plf": 5.80},
+      {"trade_size": "3-1/2", "OD": 3.500, "ID": 3.068, "Sx": 1.72, "Ix": 3.02, "Mallow_kipft": 4.74, "Em_ksi": 29000, "weight_plf": 7.58},
+      {"trade_size": "6-5/8", "OD": 6.625, "ID": 6.065, "Sx": 8.50, "Ix": 28.14, "Mallow_kipft": 23.38, "Em_ksi": 29000, "weight_plf": 18.97},
+      {"trade_size": "8-5/8", "OD": 8.625, "ID": 7.981, "Sx": 16.81, "Ix": 72.49, "Mallow_kipft": 46.23, "Em_ksi": 29000, "weight_plf": 28.55}
+    ]
+  },
+  "Group IC (50 ksi)": {
+    "standard": "ASTM F1043 High Carbon Steel Pipe",
+    "Fy_ksi": 50,
+    "posts": [
+      {"trade_size": "1-5/8", "OD": 1.660, "ID": 1.438, "Sx": 0.20, "Ix": 0.16, "Mallow_kipft": 0.54, "Em_ksi": 29000, "weight_plf": 2.27},
+      {"trade_size": "1-7/8", "OD": 1.900, "ID": 1.660, "Sx": 0.28, "Ix": 0.27, "Mallow_kipft": 0.77, "Em_ksi": 29000, "weight_plf": 2.72},
+      {"trade_size": "2-3/8", "OD": 2.375, "ID": 2.115, "Sx": 0.49, "Ix": 0.58, "Mallow_kipft": 1.34, "Em_ksi": 29000, "weight_plf": 3.65},
+      {"trade_size": "2-7/8", "OD": 2.875, "ID": 2.555, "Sx": 0.88, "Ix": 1.26, "Mallow_kipft": 2.41, "Em_ksi": 29000, "weight_plf": 5.80},
+      {"trade_size": "3-1/2", "OD": 3.500, "ID": 3.180, "Sx": 1.34, "Ix": 2.35, "Mallow_kipft": 3.69, "Em_ksi": 29000, "weight_plf": 7.58},
+      {"trade_size": "4", "OD": 4.000, "ID": 3.660, "Sx": 1.78, "Ix": 3.56, "Mallow_kipft": 4.90, "Em_ksi": 29000, "weight_plf": 9.12}
+    ]
+  },
+  "Group II C-Shape (50 ksi)": {
+    "standard": "ASTM F1043 Cold Rolled Formed C-Shape",
+    "Fy_ksi": 50,
+    "posts": [
+      {"trade_size": "1-7/8x1-5/8x.105", "OD": null, "ID": null, "Sx": 0.23, "Ix": 0.22, "Mallow_kipft": 0.63, "Em_ksi": 29000, "weight_plf": 1.80},
+      {"trade_size": "1-7/8x1-5/8x.121", "OD": null, "ID": null, "Sx": 0.39, "Ix": 0.36, "Mallow_kipft": 1.07, "Em_ksi": 29000, "weight_plf": 2.07},
+      {"trade_size": "2-1/4x1-5/8x.121", "OD": null, "ID": null, "Sx": 0.45, "Ix": 0.52, "Mallow_kipft": 1.24, "Em_ksi": 29000, "weight_plf": 2.28},
+      {"trade_size": "3-1/4x2-1/2x.130", "OD": null, "ID": null, "Sx": 1.11, "Ix": 1.88, "Mallow_kipft": 3.05, "Em_ksi": 29000, "weight_plf": 3.92}
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "_source": "CLFMI WLG 2445 (2023), Table 15 — Ice Exposure Effect Probability Coefficients",
+  "_notes": "Ice exposure coefficient is an arbitrary value based on designer judgment. Use Cf3=1.0 for solid fence.",
+  "heavy": 0.45,
+  "moderate": 0.85,
+  "none": 1.00
+}
