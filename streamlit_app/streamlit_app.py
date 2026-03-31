@@ -8,7 +8,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="FORK — Fence Optimization Resource Kit",
-    page_icon=":fence:",
+    page_icon="\U0001f3e1",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -100,19 +100,19 @@ init_session_state()
 # Navigation
 pages = {
     "Inputs": [
-        st.Page("pages/01_Project_Setup.py", title="Project Setup", icon=":clipboard:"),
-        st.Page("pages/02_Wind_Parameters.py", title="Wind Parameters", icon=":cyclone:"),
+        st.Page("pages/01_Project_Setup.py", title="Project Setup", icon="\U0001f4cb"),
+        st.Page("pages/02_Wind_Parameters.py", title="Wind Parameters", icon="\U0001f300"),
     ],
     "Design": [
-        st.Page("pages/03_Chain_Link_Design.py", title="Chain Link Design", icon=":chains:"),
-        st.Page("pages/04_Wood_Fence_Design.py", title="Wood Fence Design", icon=":deciduous_tree:"),
+        st.Page("pages/03_Chain_Link_Design.py", title="Chain Link Design", icon="\u26d3"),
+        st.Page("pages/04_Wood_Fence_Design.py", title="Wood Fence Design", icon="\U0001f333"),
     ],
     "Analysis": [
-        st.Page("pages/05_Post_Spacing.py", title="Post Spacing (CLFMI)", icon=":straight_ruler:"),
-        st.Page("pages/06_Footing_Design.py", title="Footing Design", icon=":brick:"),
+        st.Page("pages/05_Post_Spacing.py", title="Post Spacing (CLFMI)", icon="\U0001f4cf"),
+        st.Page("pages/06_Footing_Design.py", title="Footing Design", icon="\U0001f9f1"),
     ],
     "Output": [
-        st.Page("pages/07_Export_Report.py", title="Export Report", icon=":page_facing_up:"),
+        st.Page("pages/07_Export_Report.py", title="Export Report", icon="\U0001f4c4"),
     ],
 }
 
