@@ -36,8 +36,7 @@ with col1:
         "Group IC (50 ksi)",
         "Group II C-Shape (50 ksi)",
     ]
-    st.session_state.cl_post_group = st.selectbox("Post Group", groups,
-        index=groups.index(st.session_state.cl_post_group))
+    st.selectbox("Post Group", groups, key="cl_post_group")
 
     group_enum = SteelPostGroup(st.session_state.cl_post_group)
     available_sizes = get_available_trade_sizes(group_enum)
@@ -45,8 +44,7 @@ with col1:
     if st.session_state.cl_trade_size not in available_sizes and available_sizes:
         st.session_state.cl_trade_size = available_sizes[0]
 
-    st.session_state.cl_trade_size = st.selectbox("Trade Size", available_sizes,
-        index=available_sizes.index(st.session_state.cl_trade_size) if st.session_state.cl_trade_size in available_sizes else 0)
+    st.selectbox("Trade Size", available_sizes, key="cl_trade_size")
 
     section = get_steel_pipe_section(st.session_state.cl_trade_size, group_enum)
     if section:
@@ -54,18 +52,18 @@ with col1:
 
 with col2:
     st.subheader("Geometry")
-    st.session_state.cl_post_height = st.number_input("Post Height (ft)", value=st.session_state.cl_post_height,
+    st.number_input("Post Height (ft)", key="cl_post_height",
         min_value=1.0, max_value=25.0, step=0.5)
-    st.session_state.cl_post_spacing = st.number_input("Post Spacing (ft)", value=st.session_state.cl_post_spacing,
+    st.number_input("Post Spacing (ft)", key="cl_post_spacing",
         min_value=1.0, max_value=30.0, step=0.5)
 
 with col3:
     st.subheader("Mesh/Fabric")
-    st.session_state.cl_wire_gauge = st.number_input("Wire Gauge", value=st.session_state.cl_wire_gauge,
+    st.number_input("Wire Gauge", key="cl_wire_gauge",
         min_value=5, max_value=14, step=1)
-    st.session_state.cl_mesh_size = st.number_input("Mesh Size (in)", value=st.session_state.cl_mesh_size,
+    st.number_input("Mesh Size (in)", key="cl_mesh_size",
         min_value=0.25, max_value=4.0, step=0.25)
-    st.session_state.cl_mesh_weight = st.number_input("Mesh Weight (psf)", value=st.session_state.cl_mesh_weight,
+    st.number_input("Mesh Weight (psf)", key="cl_mesh_weight",
         min_value=0.01, max_value=5.0, step=0.01, format="%.3f")
 
 # Gate-specific inputs
@@ -73,17 +71,17 @@ if st.session_state.cl_post_type == "gate":
     st.subheader("Gate Leaf Properties")
     gc1, gc2 = st.columns(2)
     with gc1:
-        st.session_state.cl_gate_leaf_length = st.number_input("Gate Leaf Length (ft)",
-            value=st.session_state.cl_gate_leaf_length, min_value=0.0, max_value=30.0, step=0.25)
-        st.session_state.cl_gate_leaf_height = st.number_input("Gate Leaf Height (ft)",
-            value=st.session_state.cl_gate_leaf_height, min_value=0.0, max_value=25.0, step=0.25)
+        st.number_input("Gate Leaf Length (ft)",
+            key="cl_gate_leaf_length", min_value=0.0, max_value=30.0, step=0.25)
+        st.number_input("Gate Leaf Height (ft)",
+            key="cl_gate_leaf_height", min_value=0.0, max_value=25.0, step=0.25)
     with gc2:
-        st.session_state.cl_gate_frame_diam = st.number_input("Gate Frame Post Diam (in)",
-            value=st.session_state.cl_gate_frame_diam, min_value=0.0, max_value=10.0, step=0.125)
-        st.session_state.cl_gate_frame_weight = st.number_input("Gate Frame Post Weight (plf)",
-            value=st.session_state.cl_gate_frame_weight, min_value=0.0, max_value=30.0, step=0.01)
+        st.number_input("Gate Frame Post Diam (in)",
+            key="cl_gate_frame_diam", min_value=0.0, max_value=10.0, step=0.125)
+        st.number_input("Gate Frame Post Weight (plf)",
+            key="cl_gate_frame_weight", min_value=0.0, max_value=30.0, step=0.01)
 
-st.session_state.cl_fos = st.number_input("Factor of Safety", value=st.session_state.cl_fos,
+st.number_input("Factor of Safety", key="cl_fos",
     min_value=0.5, max_value=5.0, step=0.1,
     help="CLFMI default = 1.5")
 

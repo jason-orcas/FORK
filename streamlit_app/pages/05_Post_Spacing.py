@@ -24,34 +24,33 @@ with col1:
         "Group IC (50 ksi)",
         "Group II C-Shape (50 ksi)",
     ]
-    st.session_state.sp_post_group = st.selectbox("Post Group", groups,
-        index=groups.index(st.session_state.sp_post_group))
-    st.session_state.sp_post_od = st.number_input("Post O.D. (in)",
-        value=st.session_state.sp_post_od, min_value=1.0, max_value=10.0, step=0.125)
-    st.session_state.sp_fence_height = st.number_input("Fence Height (ft)",
-        value=st.session_state.sp_fence_height, min_value=3.0, max_value=20.0, step=0.5)
+    st.selectbox("Post Group", groups, key="sp_post_group")
+    st.number_input("Post O.D. (in)",
+        key="sp_post_od", min_value=1.0, max_value=10.0, step=0.125)
+    st.number_input("Fence Height (ft)",
+        key="sp_fence_height", min_value=3.0, max_value=20.0, step=0.5)
 
 with col2:
     st.subheader("Wind & Environment")
-    st.session_state.sp_wind_speed = st.number_input("Wind Speed (mph)",
-        value=st.session_state.sp_wind_speed, min_value=105.0, max_value=210.0, step=5.0,
+    st.number_input("Wind Speed (mph)",
+        key="sp_wind_speed", min_value=105.0, max_value=210.0, step=5.0,
         help="ASCE 7-22 ultimate wind speed (105-210 mph)")
-    st.session_state.sp_exposure = st.selectbox("Exposure Category",
-        ["B", "C", "D"], index=["B", "C", "D"].index(st.session_state.sp_exposure))
-    st.session_state.sp_ice = st.selectbox("Ice Exposure",
-        ["none", "moderate", "heavy"], index=["none", "moderate", "heavy"].index(st.session_state.sp_ice))
+    st.selectbox("Exposure Category",
+        ["B", "C", "D"], key="sp_exposure")
+    st.selectbox("Ice Exposure",
+        ["none", "moderate", "heavy"], key="sp_ice")
 
 st.subheader("Mesh")
 mc1, mc2 = st.columns(2)
 with mc1:
-    st.session_state.sp_wire_gauge = st.number_input("Wire Gauge",
-        value=st.session_state.sp_wire_gauge, min_value=5, max_value=14, step=1)
+    st.number_input("Wire Gauge",
+        key="sp_wire_gauge", min_value=5, max_value=14, step=1)
 with mc2:
-    st.session_state.sp_mesh_size = st.number_input("Mesh Size (in)",
-        value=st.session_state.sp_mesh_size, min_value=0.25, max_value=4.0, step=0.25)
+    st.number_input("Mesh Size (in)",
+        key="sp_mesh_size", min_value=0.25, max_value=4.0, step=0.25)
 
-st.session_state.sp_actual_spacing = st.number_input("Actual Design Spacing (ft)",
-    value=st.session_state.sp_actual_spacing, min_value=1.0, max_value=30.0, step=0.5)
+st.number_input("Actual Design Spacing (ft)",
+    key="sp_actual_spacing", min_value=1.0, max_value=30.0, step=0.5)
 
 use_override = st.checkbox("Override S table value (manual entry)")
 if use_override:

@@ -36,46 +36,46 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.subheader("Post Properties")
-    st.session_state.wood_species = st.selectbox("Wood Species", ["Douglas Fir"],
-        index=0, help="Additional species can be added to data/wood_species.json")
-    st.session_state.wood_post_diam = st.number_input("Post Diameter (in)",
-        value=st.session_state.wood_post_diam, min_value=1.0, max_value=24.0, step=0.5)
-    st.session_state.wood_post_weight = st.number_input("Post Weight (plf)",
-        value=st.session_state.wood_post_weight, min_value=0.1, max_value=50.0, step=0.1)
+    st.selectbox("Wood Species", ["Douglas Fir"], key="wood_species",
+        help="Additional species can be added to data/wood_species.json")
+    st.number_input("Post Diameter (in)",
+        key="wood_post_diam", min_value=1.0, max_value=24.0, step=0.5)
+    st.number_input("Post Weight (plf)",
+        key="wood_post_weight", min_value=0.1, max_value=50.0, step=0.1)
 
 with col2:
     st.subheader("Geometry")
-    st.session_state.wood_post_height = st.number_input("Post Height (ft)",
-        value=st.session_state.wood_post_height, min_value=1.0, max_value=25.0, step=0.5)
-    st.session_state.wood_post_spacing = st.number_input("Post Spacing (ft)",
-        value=st.session_state.wood_post_spacing, min_value=1.0, max_value=30.0, step=0.5)
+    st.number_input("Post Height (ft)",
+        key="wood_post_height", min_value=1.0, max_value=25.0, step=0.5)
+    st.number_input("Post Spacing (ft)",
+        key="wood_post_spacing", min_value=1.0, max_value=30.0, step=0.5)
 
 with col3:
     st.subheader("Mesh/Fabric")
-    st.session_state.wood_wire_diam = st.number_input("Wire Diameter (in)",
-        value=st.session_state.wood_wire_diam, min_value=0.01, max_value=0.5, step=0.001, format="%.3f")
-    st.session_state.wood_mesh_size = st.number_input("Mesh Size (in)",
-        value=st.session_state.wood_mesh_size, min_value=0.25, max_value=10.0, step=0.25)
-    st.session_state.wood_mesh_weight = st.number_input("Mesh Weight (psf)",
-        value=st.session_state.wood_mesh_weight, min_value=0.01, max_value=5.0, step=0.01, format="%.3f")
+    st.number_input("Wire Diameter (in)",
+        key="wood_wire_diam", min_value=0.01, max_value=0.5, step=0.001, format="%.3f")
+    st.number_input("Mesh Size (in)",
+        key="wood_mesh_size", min_value=0.25, max_value=10.0, step=0.25)
+    st.number_input("Mesh Weight (psf)",
+        key="wood_mesh_weight", min_value=0.01, max_value=5.0, step=0.01, format="%.3f")
 
 # Gate-specific inputs
 if st.session_state.wood_post_type == "gate":
     st.subheader("Gate Leaf Properties")
     gc1, gc2 = st.columns(2)
     with gc1:
-        st.session_state.wood_gate_leaf_length = st.number_input("Gate Leaf Length (ft)",
-            value=st.session_state.wood_gate_leaf_length, min_value=0.0, max_value=30.0, step=0.25)
-        st.session_state.wood_gate_leaf_height = st.number_input("Gate Leaf Height (ft)",
-            value=st.session_state.wood_gate_leaf_height, min_value=0.0, max_value=25.0, step=0.25)
+        st.number_input("Gate Leaf Length (ft)",
+            key="wood_gate_leaf_length", min_value=0.0, max_value=30.0, step=0.25)
+        st.number_input("Gate Leaf Height (ft)",
+            key="wood_gate_leaf_height", min_value=0.0, max_value=25.0, step=0.25)
     with gc2:
-        st.session_state.wood_gate_frame_diam = st.number_input("Gate Frame Post Diam (in)",
-            value=st.session_state.wood_gate_frame_diam, min_value=0.0, max_value=10.0, step=0.125)
-        st.session_state.wood_gate_frame_weight = st.number_input("Gate Frame Post Weight (plf)",
-            value=st.session_state.wood_gate_frame_weight, min_value=0.0, max_value=30.0, step=0.01)
+        st.number_input("Gate Frame Post Diam (in)",
+            key="wood_gate_frame_diam", min_value=0.0, max_value=10.0, step=0.125)
+        st.number_input("Gate Frame Post Weight (plf)",
+            key="wood_gate_frame_weight", min_value=0.0, max_value=30.0, step=0.01)
 
-st.session_state.wood_fos = st.number_input("Factor of Safety",
-    value=default_fos, min_value=0.5, max_value=5.0, step=0.1,
+st.number_input("Factor of Safety", key="wood_fos",
+    min_value=0.5, max_value=5.0, step=0.1,
     help=f"Default: {default_fos:.1f} for {selected_type.lower()}")
 
 st.divider()

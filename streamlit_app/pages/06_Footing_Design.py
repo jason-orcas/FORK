@@ -19,18 +19,18 @@ st.session_state.ft_method = "IBC" if "IBC" in method else "ASTM F567"
 col1, col2 = st.columns(2)
 
 with col1:
-    st.session_state.ft_fence_height = st.number_input("Fence Height (ft)",
-        value=st.session_state.ft_fence_height, min_value=1.0, max_value=25.0, step=0.5)
-    st.session_state.ft_actual_depth = st.number_input("Actual Footing Depth (ft)",
-        value=st.session_state.ft_actual_depth, min_value=0.5, max_value=15.0, step=0.25)
+    st.number_input("Fence Height (ft)",
+        key="ft_fence_height", min_value=1.0, max_value=25.0, step=0.5)
+    st.number_input("Actual Footing Depth (ft)",
+        key="ft_actual_depth", min_value=0.5, max_value=15.0, step=0.25)
 
 if st.session_state.ft_method == "IBC":
     with col2:
-        st.session_state.ft_soil_bearing = st.number_input("Allowable Lateral Soil Bearing (psf)",
-            value=st.session_state.ft_soil_bearing, min_value=50.0, max_value=2000.0, step=25.0,
+        st.number_input("Allowable Lateral Soil Bearing (psf)",
+            key="ft_soil_bearing", min_value=50.0, max_value=2000.0, step=25.0,
             help="IBC Table 1806.2. Clay ~100 psf/ft, Sand ~150-200 psf/ft, Gravel ~200 psf/ft.")
-        st.session_state.ft_footing_diam = st.number_input("Footing Diameter (ft)",
-            value=st.session_state.ft_footing_diam, min_value=0.5, max_value=5.0, step=0.25,
+        st.number_input("Footing Diameter (ft)",
+            key="ft_footing_diam", min_value=0.5, max_value=5.0, step=0.25,
             help="ASTM F567: 3x pipe OD (min 12\"). CLFMI recommends 30\" for high wind.")
 
     st.divider()
