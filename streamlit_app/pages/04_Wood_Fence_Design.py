@@ -22,9 +22,13 @@ st.header("Wood Fence Post Design")
 st.caption("NDS 2018 — National Design Specification for Wood Construction")
 
 # Post type selector
-post_types = {"Line Post": "line", "Pull/Terminal Post": "pull", "Gate Post": "gate"}
-selected_type = st.radio("Post Type", list(post_types.keys()), horizontal=True)
-st.session_state.wood_post_type = post_types[selected_type]
+post_type_labels = ["Line Post", "Pull/Terminal Post", "Gate Post"]
+post_type_map = {"Line Post": "line", "Pull/Terminal Post": "pull", "Gate Post": "gate"}
+if "wood_post_type_label" not in st.session_state:
+    st.session_state.wood_post_type_label = "Line Post"
+st.radio("Post Type", post_type_labels, key="wood_post_type_label", horizontal=True)
+st.session_state.wood_post_type = post_type_map[st.session_state.wood_post_type_label]
+selected_type = st.session_state.wood_post_type_label
 
 # Auto-set FoS default based on post type
 if st.session_state.wood_post_type == "gate":

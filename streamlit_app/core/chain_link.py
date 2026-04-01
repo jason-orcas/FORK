@@ -139,20 +139,26 @@ def _calc_shear(qz: float, wind: WindInput, cl: ChainLinkInput) -> float:
 def _calc_moment(shear: float, cl: ChainLinkInput) -> float:
     """Calculate moment at post base (lb-ft).
 
-    Line/Pull: M = Shear * H * 2/3
-        (assumes triangular wind pressure distribution, resultant at 2/3 H)
+    Boundary conditions determine the moment arm:
+    - Line posts: RESTRICTED head (top rail + fabric provide lateral restraint)
+      M = Shear * H / 2 (uniform load on propped cantilever, resultant at H/2)
+    - Pull/Gate posts: FREE head (no lateral restraint at top)
+      M = Shear * H * 2/3 (uniform load on cantilever, resultant at 2/3 H)
 
-    Gate: M = Shear*H*2/3 + gate_dead_load_eccentricity
-        gate eccentricity = (gate_mesh_wt + gate_frame_wt) * gate_leaf_length/2
+    Gate posts also include dead load eccentricity from gate leaf.
 
     Source: Line Post.xlsx B33, Gate Post Basic.xlsx B35
     """
     H = cl.post_height  # ft
 
-    # Wind moment (resultant at 2/3 height for uniform pressure on cantilever)
-    # Note: Using H/2 for uniform pressure is also valid; the spreadsheets
-    # use 2/3*H which is conservative (assumes higher resultant)
-    moment = shear * H * 2.0 / 3.0
+    if cl.post_type == PostType.LINE:
+        # Restricted head: top rail + fabric provide lateral support
+        # Effective moment arm = H/2 for uniform load
+        moment = shear * H / 2.0
+    else:
+        # Free head (pull/gate): no top restraint
+        # Effective moment arm = 2H/3 for uniform load
+        moment = shear * H * 2.0 / 3.0
 
     if cl.post_type == PostType.GATE and cl.gate_leaf_length > 0:
         # Gate dead load eccentricity about the post

@@ -22,9 +22,12 @@ from core.sections import get_steel_pipe_section, get_available_trade_sizes
 st.header("Chain Link Fence Post Design")
 
 # Post type selector
-post_types = {"Line Post": "line", "Pull/Terminal Post": "pull", "Gate Post": "gate"}
-selected_type = st.radio("Post Type", list(post_types.keys()), horizontal=True)
-st.session_state.cl_post_type = post_types[selected_type]
+post_type_labels = ["Line Post", "Pull/Terminal Post", "Gate Post"]
+post_type_map = {"Line Post": "line", "Pull/Terminal Post": "pull", "Gate Post": "gate"}
+if "cl_post_type_label" not in st.session_state:
+    st.session_state.cl_post_type_label = "Line Post"
+st.radio("Post Type", post_type_labels, key="cl_post_type_label", horizontal=True)
+st.session_state.cl_post_type = post_type_map[st.session_state.cl_post_type_label]
 
 col1, col2, col3 = st.columns(3)
 

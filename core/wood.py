@@ -178,9 +178,18 @@ def _calc_shear(qz: float, wind: WindInput, wood: WoodFenceInput) -> float:
 
 
 def _calc_moment(shear: float, wood: WoodFenceInput) -> float:
-    """Calculate moment at post base (lb-ft)."""
+    """Calculate moment at post base (lb-ft).
+
+    Line posts: RESTRICTED head (fabric/rail provides lateral support)
+        M = V * H / 2 (propped cantilever)
+    Pull/Gate posts: FREE head (no lateral restraint at top)
+        M = V * H * 2/3 (cantilever)
+    """
     H = wood.post_height
-    moment = shear * H * 2.0 / 3.0
+    if wood.post_type == PostType.LINE:
+        moment = shear * H / 2.0
+    else:
+        moment = shear * H * 2.0 / 3.0
 
     if wood.post_type == PostType.GATE and wood.gate_leaf_length > 0:
         gate_mesh_wt = wood.mesh_weight * wood.gate_leaf_height * wood.gate_leaf_length

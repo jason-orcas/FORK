@@ -27,7 +27,10 @@ st.header("Post Optimizer")
 st.caption("Finds the lightest post that passes all structural checks for your site conditions.")
 
 # Fence type selector
-fence_type = st.radio("Fence Type", ["Chain Link", "Wood"], horizontal=True)
+if "opt_fence_type_label" not in st.session_state:
+    st.session_state.opt_fence_type_label = "Chain Link"
+st.radio("Fence Type", ["Chain Link", "Wood"], key="opt_fence_type_label", horizontal=True)
+fence_type = st.session_state.opt_fence_type_label
 
 col1, col2 = st.columns(2)
 

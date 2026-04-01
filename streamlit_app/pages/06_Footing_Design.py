@@ -1,4 +1,8 @@
-"""Page 06 - Footing Depth Calculation with Soil Type Selector."""
+"""Page 06 - Footing Design per Post Type.
+
+Line posts: driven (no concrete), minimum embedment per ASTM F567.
+Pull/terminal and gate posts: concrete footing per IBC Eq. 18-1 or ASTM F567.
+"""
 
 import json
 import sys
@@ -7,6 +11,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import streamlit as st
+import pandas as pd
 
 from core.models import FootingInput, IBCEdition
 from core.footing import calculate_footing_depth_ibc, calculate_footing_depth_astm_f567
@@ -20,9 +25,58 @@ _SOIL_TYPES = {s["name"]: s["lateral_psf_per_ft"] for s in _SOIL_DATA["soil_type
 
 st.header("Footing Design")
 
-method = st.radio("Calculation Method", ["IBC Eq. 18-1", "ASTM F567 (Simplified)"],
-    horizontal=True)
-st.session_state.ft_method = "IBC" if "IBC" in method else "ASTM F567"
+st.info(
+    "**Line posts** are typically driven (no concrete) with minimum embedment per ASTM F567. "
+    "**Pull/terminal and gate posts** require concrete footings designed per IBC Eq. 18-1."
+)
+
+# --- Line Posts (Driven) ---
+st.subheader("Line Posts (Driven - No Concrete)")
+
+lc1, lc2 = st.columns(2)
+with lc1:
+    line_fence_height = st.number_input("Fence Height for Line Posts (ft)",
+        value=st.session_state.get("ft_fence_height", 7.0),
+        min_value=1.0, max_value=25.0, step=0.5, key="ft_line_fence_height")
+with lc2:
+    line_actual_depth = st.number_input("Actual Driven Depth (ft)",
+        value=3.0, min_value=0.5, max_value=12.0, step=0.25, key="ft_line_actual_depth")
+
+if st.button("Check Line Post Embedment", type="secondary"):
+    # ASTM F567 minimum: 24" + 3" per foot over 4'
+    H = st.session_state.ft_line_fence_height
+    if H <= 4.0:
+        min_depth_in = 24.0
+    else:
+        min_depth_in = 24.0 + 3.0 * (H - 4.0)
+    min_depth_ft = min_depth_in / 12.0
+
+    actual = st.session_state.ft_line_actual_depth
+
+    st.write(f"**ASTM F567 Minimum Embedment:** {min_depth_in:.0f}\" ({min_depth_ft:.2f} ft)")
+    st.write(f"**Actual Driven Depth:** {actual:.2f} ft")
+
+    if actual >= min_depth_ft:
+        st.success(f"Driven depth ({actual:.2f} ft) >= minimum ({min_depth_ft:.2f} ft) - **ADEQUATE**")
+    else:
+        st.error(f"Driven depth ({actual:.2f} ft) < minimum ({min_depth_ft:.2f} ft) - **NOT ADEQUATE**")
+
+    st.caption("Line posts are driven without concrete. Embedment per ASTM F567 Section 8.1.")
+
+st.divider()
+
+# --- Pull/Terminal & Gate Posts (Concrete Footing) ---
+st.subheader("Pull/Terminal & Gate Posts (Concrete Footing)")
+
+if "ft_method_label" not in st.session_state:
+    st.session_state.ft_method_label = "IBC Eq. 18-1"
+st.radio("Calculation Method", ["IBC Eq. 18-1", "ASTM F567 (Simplified)"],
+    key="ft_method_label", horizontal=True)
+ft_method = "IBC" if "IBC" in st.session_state.ft_method_label else "ASTM F567"
+
+# Post type sub-selector
+post_calc_type = st.radio("Calculate For", ["Pull/Terminal Post", "Gate Post"],
+    horizontal=True, key="ft_post_calc_type")
 
 col1, col2 = st.columns(2)
 
@@ -32,7 +86,7 @@ with col1:
     st.number_input("Actual Footing Depth (ft)",
         key="ft_actual_depth", min_value=0.5, max_value=15.0, step=0.25)
 
-if st.session_state.ft_method == "IBC":
+if ft_method == "IBC":
     with col2:
         # Soil type selector
         soil_names = ["Custom"] + list(_SOIL_TYPES.keys())
@@ -74,6 +128,7 @@ if st.session_state.ft_method == "IBC":
             actual_depth=st.session_state.ft_actual_depth,
         )
 
+        # Get wind force — use the appropriate post type result
         P = 0.0
         cl_result = st.session_state.get("cl_result")
         wood_result = st.session_state.get("wood_result")
@@ -81,6 +136,11 @@ if st.session_state.ft_method == "IBC":
             P = cl_result.shear
         elif wood_result is not None:
             P = wood_result.shear
+
+        # Gate posts see higher loads (free head, eccentricity)
+        if post_calc_type == "Gate Post" and P > 0:
+            st.caption("Using wind shear from design page. Gate posts may have "
+                       "additional dead load eccentricity from gate leaf.")
 
         if P <= 0:
             st.warning("No wind shear available. Run Chain Link or Wood Fence design first, "
@@ -90,7 +150,7 @@ if st.session_state.ft_method == "IBC":
         result = calculate_footing_depth_ibc(footing, P)
         st.session_state.footing_result = result
 
-        st.subheader("Results")
+        st.subheader(f"Results - {post_calc_type}")
         st.latex(r"A = \frac{2.34 P}{S_1 \cdot d} = " + f"{result.A_intermediate:.3f}")
         st.latex(r"c = 0.55 \times H = " + f"{result.c_arm:.2f} \\text{{ ft}}")
         st.latex(r"D = 0.5A \left\{1 + \sqrt{1 + \frac{4.36c}{A}}\right\} = " + f"{result.D_calc:.2f} \\text{{ ft}}")
@@ -115,12 +175,12 @@ else:
         result = calculate_footing_depth_astm_f567(footing)
         st.session_state.footing_result = result
 
-        st.subheader("Results")
+        st.subheader(f"Results - {post_calc_type}")
         H = st.session_state.ft_fence_height
         if H > 4.0:
             st.latex(r"D = 24'' + 3'' \times (H - 4') = 24 + 3 \times " + f"({H:.1f} - 4) = {result.D_calc * 12:.0f}''")
         else:
-            st.latex(r"D = 24'' \\text{ (minimum)}")
+            st.latex(r"D = 24'' \\text{{ (minimum)}}")
 
         rc1, rc2 = st.columns(2)
         rc1.metric("Required Depth", f"{result.D_calc:.2f} ft ({result.D_calc * 12:.0f} in)")
