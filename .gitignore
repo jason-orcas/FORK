@@ -32,6 +32,10 @@ Thumbs.db
 # Reference PDFs
 *.pdf
 
+# User project files (saved from Streamlit app)
+/*.json
+!requirements*.json
+
 # Rendered images from PDF extraction
 *.png
 
