@@ -49,6 +49,7 @@ class OptimizationResult:
     footing_depth_ft: float = 0.0
     passes: bool = False
     is_optimal: bool = False
+    failure_reason: str = ""       # human-readable explanation if passes=False
 
 
 def optimize_chain_link(
@@ -102,7 +103,24 @@ def optimize_chain_link(
             # Step 1: CLFMI spacing lookup
             S = lookup_S(wind.wind_speed, group_enum, section.OD, fence_height)
             if S is None:
-                # Post is overstressed at this height/speed
+                # Post is overstressed at this height/speed per CLFMI table
+                results.append(OptimizationResult(
+                    fence_type="chain_link",
+                    post_group=group_name,
+                    trade_size=section.trade_size,
+                    post_od=section.OD,
+                    weight_plf=section.weight,
+                    Mallow_kipft=section.Mallow,
+                    max_spacing=0.0,
+                    moment_ratio=0.0,
+                    footing_depth_ft=0.0,
+                    passes=False,
+                    failure_reason=(
+                        f"CLFMI table shows post overstressed at "
+                        f"{fence_height:.0f} ft height with {wind.wind_speed:.0f} mph wind. "
+                        f"Allowable moment ({section.Mallow:.2f} kip-ft) exceeded."
+                    ),
+                ))
                 continue
 
             S_prime = S * Cf1 * Cf2 * Cf3
@@ -137,6 +155,13 @@ def optimize_chain_link(
             ft_result = calculate_footing_depth_ibc(footing, cl_result.shear)
 
             passes = cl_result.is_adequate
+            failure_reason = ""
+            if not passes:
+                failure_reason = (
+                    f"Moment demand ({cl_result.M_demand:.2f} kip-ft) exceeds "
+                    f"allowable ({section.Mallow:.2f} kip-ft) at "
+                    f"{spacing:.1f} ft spacing. Moment ratio = {cl_result.moment_ratio:.2f}."
+                )
 
             results.append(OptimizationResult(
                 fence_type="chain_link",
@@ -149,6 +174,7 @@ def optimize_chain_link(
                 moment_ratio=cl_result.moment_ratio,
                 footing_depth_ft=ft_result.D_calc,
                 passes=passes,
+                failure_reason=failure_reason,
             ))
 
     # Sort: lightest weight first, then widest spacing (descending)
@@ -232,6 +258,19 @@ def optimize_wood(
         ft_result = calculate_footing_depth_ibc(footing, wd_result.shear)
 
         passes = wd_result.is_adequate
+        failure_reason = ""
+        if not passes:
+            reasons = []
+            if wd_result.combined_ratio > 1.0:
+                reasons.append(
+                    f"Combined stress ratio {wd_result.combined_ratio:.2f} > 1.0 "
+                    f"(NDS 3.9.2 interaction)"
+                )
+            if wd_result.shear_ratio > 1.0:
+                reasons.append(
+                    f"Shear ratio {wd_result.shear_ratio:.2f} > 1.0"
+                )
+            failure_reason = "; ".join(reasons) if reasons else "Strength check failed."
 
         results.append(OptimizationResult(
             fence_type="wood",
@@ -245,6 +284,7 @@ def optimize_wood(
             deflection_in=wd_result.deflection,
             footing_depth_ft=ft_result.D_calc,
             passes=passes,
+            failure_reason=failure_reason,
         ))
 
     # Sort: passing first, then lightest weight
