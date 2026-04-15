@@ -1,0 +1,13 @@
+[theme]
+# Bowman brand colors (Bowman_Brand_Standards-e.pdf, June 2025)
+# Primary: Bowman Green #00593d
+# Secondary: Bowman Blue #03425b, Bowman Celadon Green #bbcbbe, Bowman Gray #767b81
+# Accent: Bowman Accent Yellow #f5bb0e, Bowman Accent Green #83bc43
+primaryColor = "#00593d"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F7F6"
+textColor = "#262730"
+# Segoe UI is Bowman's secondary (office) font per the brand standards.
+# Streamlit's "sans serif" option uses the system UI font, which is
+# Segoe UI on Windows, Helvetica/Arial on macOS/Linux.
+font = "sans serif"

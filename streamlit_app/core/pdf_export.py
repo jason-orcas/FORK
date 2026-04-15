@@ -24,17 +24,39 @@ from .models import (
 )
 
 
-# Colors
-_GREEN = (200, 240, 200)
-_RED = (255, 200, 200)
-_YELLOW = (255, 245, 200)
-_HEADER_BG = (50, 80, 120)
+# Bowman brand colors (Bowman_Brand_Standards-e.pdf, June 2025)
+_BOWMAN_GREEN = (0, 89, 62)        # #00593d — primary brand color
+_BOWMAN_BLUE = (3, 66, 91)         # #03425b — secondary
+_BOWMAN_CELADON = (187, 203, 190)  # #bbcbbe — secondary
+_BOWMAN_GRAY = (118, 123, 129)     # #767b81 — secondary
+_BOWMAN_YELLOW = (245, 187, 14)    # #f5bb0e — accent (use sparingly)
+_BOWMAN_ACCENT_GREEN = (131, 188, 67)  # #83bc43 — accent
+
+# Functional status colors (lightened for table fills, on-brand where possible)
+_GREEN = (220, 235, 222)     # Pass — lightened Bowman Celadon Green tone
+_YELLOW = (255, 245, 200)    # Warning — pale yellow, sparingly per standards
+_RED = (245, 215, 215)       # Fail — muted red (not a Bowman color, functional only)
+
+# Table/header colors
+_HEADER_BG = _BOWMAN_GREEN
 _HEADER_FG = (255, 255, 255)
-_ALT_ROW = (240, 245, 250)
+_ALT_ROW = (240, 245, 242)   # very pale celadon tint for zebra striping
+
+# Body text — black 15% lighter per Bowman brand standards
+_TEXT_BODY = (38, 38, 38)
+_TEXT_MUTED = (118, 123, 129)  # Bowman Gray for secondary text
 
 
 class FenceReportPDF(FPDF):
-    """Custom PDF class for FORK fence design reports."""
+    """Custom PDF class for FORK fence design reports.
+
+    Styled per Bowman Brand Standards (June 2025):
+      - Primary color: Bowman Green #00593d
+      - Secondary: Bowman Blue #03425b, Bowman Celadon Green
+      - Body text: black 15% lighter
+      - No gradients, no decorative shapes, clean and simple
+      - Left-aligned text per content style guide
+    """
 
     def __init__(self):
         super().__init__(orientation="P", unit="mm", format="letter")
@@ -42,27 +64,27 @@ class FenceReportPDF(FPDF):
 
     def header(self):
         self.set_font("Helvetica", "B", 8)
-        self.set_text_color(100, 100, 100)
-        self.cell(0, 5, "FORK - Fence Optimization Resource Kit", align="L")
+        self.set_text_color(*_TEXT_MUTED)
+        self.cell(0, 5, "FORK - Fence Optimization Resource Kit  |  BOWMAN", align="L")
         self.ln(6)
 
     def footer(self):
         self.set_y(-15)
         self.set_font("Helvetica", "I", 8)
-        self.set_text_color(150, 150, 150)
-        self.cell(0, 5, f"Page {self.page_no()}/{{nb}}", align="C")
+        self.set_text_color(*_TEXT_MUTED)
+        self.cell(0, 5, f"bowman.com  |  Page {self.page_no()}/{{nb}}", align="C")
 
     def _section_title(self, title: str):
         self.set_font("Helvetica", "B", 12)
-        self.set_text_color(30, 60, 100)
+        self.set_text_color(*_BOWMAN_GREEN)
         self.cell(0, 8, title, new_x="LMARGIN", new_y="NEXT")
-        self.set_draw_color(30, 60, 100)
+        self.set_draw_color(*_BOWMAN_GREEN)
         self.line(self.l_margin, self.get_y(), self.w - self.r_margin, self.get_y())
         self.ln(3)
 
     def _kv_row(self, label: str, value: str):
         self.set_font("Helvetica", "", 10)
-        self.set_text_color(0, 0, 0)
+        self.set_text_color(*_TEXT_BODY)
         self.cell(70, 6, label, new_x="RIGHT")
         self.set_font("Helvetica", "B", 10)
         self.cell(0, 6, value, new_x="LMARGIN", new_y="NEXT")
@@ -77,7 +99,7 @@ class FenceReportPDF(FPDF):
 
     def _table_row(self, values: list[str], widths: list[int], fill_color=None):
         self.set_font("Helvetica", "", 9)
-        self.set_text_color(0, 0, 0)
+        self.set_text_color(*_TEXT_BODY)
         if fill_color:
             self.set_fill_color(*fill_color)
         for v, w in zip(values, widths):
@@ -88,7 +110,7 @@ class FenceReportPDF(FPDF):
         color = _GREEN if passed else _RED
         self.set_fill_color(*color)
         self.set_font("Helvetica", "B", 11)
-        self.set_text_color(0, 0, 0)
+        self.set_text_color(*_TEXT_BODY)
         self.cell(0, 8, text, fill=True, align="C", new_x="LMARGIN", new_y="NEXT")
         self.ln(2)
 
@@ -107,16 +129,32 @@ def generate_report(data: FenceReportData) -> bytes:
 
     # --- Cover page ---
     pdf.add_page()
-    pdf.set_font("Helvetica", "B", 24)
-    pdf.set_text_color(30, 60, 100)
     pdf.ln(30)
-    pdf.cell(0, 15, "FORK", align="C", new_x="LMARGIN", new_y="NEXT")
-    pdf.set_font("Helvetica", "", 14)
-    pdf.cell(0, 10, "Fence Optimization Resource Kit", align="C", new_x="LMARGIN", new_y="NEXT")
-    pdf.ln(10)
+
+    # Bowman brand block
+    pdf.set_font("Helvetica", "B", 28)
+    pdf.set_text_color(*_BOWMAN_GREEN)
+    pdf.cell(0, 14, "BOWMAN", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "", 10)
+    pdf.set_text_color(*_TEXT_MUTED)
+    pdf.cell(0, 5, "bowman.com", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(25)
+
+    # Tool title
+    pdf.set_font("Helvetica", "B", 22)
+    pdf.set_text_color(*_BOWMAN_GREEN)
+    pdf.cell(0, 12, "FORK", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", "", 13)
+    pdf.set_text_color(*_TEXT_BODY)
+    pdf.cell(0, 8, "Fence Optimization Resource Kit", align="C", new_x="LMARGIN", new_y="NEXT")
+    pdf.ln(20)
+
+    # Project details
     pdf.set_font("Helvetica", "B", 16)
+    pdf.set_text_color(*_BOWMAN_BLUE)
     pdf.cell(0, 10, data.project.project_name, align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", "", 12)
+    pdf.set_text_color(*_TEXT_BODY)
     pdf.cell(0, 8, data.project.project_location, align="C", new_x="LMARGIN", new_y="NEXT")
     pdf.ln(20)
     pdf.set_font("Helvetica", "", 11)
