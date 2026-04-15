@@ -35,12 +35,11 @@ st.subheader("Line Posts (Driven - No Concrete)")
 
 lc1, lc2 = st.columns(2)
 with lc1:
-    line_fence_height = st.number_input("Fence Height for Line Posts (ft)",
-        value=st.session_state.get("ft_fence_height", 7.0),
-        min_value=1.0, max_value=25.0, step=0.5, key="ft_line_fence_height")
+    st.number_input("Fence Height for Line Posts (ft)", key="ft_line_fence_height",
+        min_value=1.0, max_value=25.0, step=0.5)
 with lc2:
-    line_actual_depth = st.number_input("Actual Driven Depth (ft)",
-        value=3.0, min_value=0.5, max_value=12.0, step=0.25, key="ft_line_actual_depth")
+    st.number_input("Actual Driven Depth (ft)", key="ft_line_actual_depth",
+        min_value=0.5, max_value=12.0, step=0.25)
 
 if st.button("Check Line Post Embedment", type="secondary"):
     # ASTM F567 minimum: 24" + 3" per foot over 4'
@@ -90,8 +89,9 @@ if ft_method == "IBC":
     with col2:
         # Soil type selector
         soil_names = ["Custom"] + list(_SOIL_TYPES.keys())
-        soil_choice = st.selectbox("Soil Type (IBC Table 1806.2)", soil_names,
+        st.selectbox("Soil Type (IBC Table 1806.2)", soil_names, key="ft_soil_choice",
             help="Select soil type to auto-fill lateral bearing pressure, or choose Custom.")
+        soil_choice = st.session_state.ft_soil_choice
 
         if soil_choice != "Custom":
             base_pressure = _SOIL_TYPES[soil_choice]
@@ -99,10 +99,10 @@ if ft_method == "IBC":
         else:
             base_pressure = None
 
-        apply_2x = st.checkbox("Apply 2x for isolated fence posts (IBC 1806.3.4)",
-            value=True,
+        st.checkbox("Apply 2x for isolated fence posts (IBC 1806.3.4)", key="ft_apply_2x",
             help="IBC 1806.3.4: Isolated poles not adversely affected by 1/2\" "
                  "ground motion from short-term lateral loads may use 2x lateral bearing.")
+        apply_2x = st.session_state.ft_apply_2x
 
         if base_pressure is not None:
             effective = base_pressure * (2 if apply_2x else 1)

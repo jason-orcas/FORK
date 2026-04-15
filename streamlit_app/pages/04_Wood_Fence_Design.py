@@ -83,8 +83,9 @@ st.number_input("Factor of Safety", key="wood_fos",
     help=f"Default: {default_fos:.1f} for {selected_type.lower()}")
 
 defl_options = {"L/60": 60, "L/120": 120, "L/180": 180, "L/240": 240, "No Limit": 0}
-defl_choice = st.selectbox("Deflection Limit", list(defl_options.keys()), index=2,
+st.selectbox("Deflection Limit", list(defl_options.keys()), key="wood_defl_choice",
     help="Allowable deflection = post height / selected ratio. Common: L/120 to L/240.")
+defl_choice = st.session_state.wood_defl_choice
 
 st.divider()
 

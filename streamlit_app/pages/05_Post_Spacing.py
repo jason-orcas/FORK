@@ -109,10 +109,11 @@ with mc2:
 st.number_input("Actual Design Spacing (ft)",
     key="sp_actual_spacing", min_value=1.0, max_value=30.0, step=0.5)
 
-use_override = st.checkbox("Override S table value (manual entry)")
-if use_override:
-    override_val = st.number_input("S override (ft)", value=10.0, min_value=0.1, max_value=200.0)
-    st.session_state.sp_s_override = override_val
+st.checkbox("Override S table value (manual entry)", key="sp_use_override")
+if st.session_state.sp_use_override:
+    st.number_input("S override (ft)", key="sp_override_val",
+        min_value=0.1, max_value=200.0, step=0.5)
+    st.session_state.sp_s_override = st.session_state.sp_override_val
 else:
     st.session_state.sp_s_override = None
 

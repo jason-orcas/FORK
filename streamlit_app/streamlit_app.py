@@ -83,6 +83,30 @@ def init_session_state():
         "ft_footing_diam": 1.5,
         "ft_fence_height": 7.0,
         "ft_actual_depth": 4.0,
+        # Fence Run
+        "fr_total_length": 200.0,
+        "fr_post_spacing": 10.0,
+        "fr_num_corners": 0,
+        "fr_num_gates": 0,
+        "fr_post_height": 7.0,
+        "fr_post_weight": 3.65,
+        "fr_footing_diam": 1.5,
+        "fr_fabric_height": 6.0,
+        "fr_has_top_rail": True,
+        "fr_depth_line": 3.0,
+        "fr_depth_pull": 3.5,
+        "fr_depth_gate": 4.0,
+        # Deflection limit
+        "wood_defl_choice": "L/180",
+        # Post Spacing extras
+        "sp_use_override": False,
+        "sp_override_val": 10.0,
+        # Footing extras
+        "ft_line_fence_height": 7.0,
+        "ft_line_actual_depth": 3.0,
+        "ft_post_calc_type": "Pull/Terminal Post",
+        "ft_soil_choice": "Custom",
+        "ft_apply_2x": True,
         # Optimizer
         "opt_fence_height": 7.0,
         "opt_wind_speed": 115.0,
