@@ -107,6 +107,20 @@ def init_session_state():
         "ft_post_calc_type": "Pull/Terminal Post",
         "ft_soil_choice": "Custom",
         "ft_apply_2x": True,
+        "ft_soil_input_mode": "Simple",
+        "ft_profile_derivation": "Engineering properties",
+        # Soil profile
+        "soil_layers": [],
+        "water_table_depth": None,
+        "axial_zones": [],
+        "use_axial_zones": False,
+        # Frost
+        "frost_depth_in": 36.0,
+        "frost_method": "Regional lookup",
+        "frost_region": "Midwest",
+        "frost_depth_manual": 36.0,
+        "tau_af_psi": 0.0,
+        "frost_result": None,
         # Optimizer
         "opt_fence_height": 7.0,
         "opt_wind_speed": 115.0,
@@ -139,22 +153,23 @@ init_session_state()
 pages = {
     "Inputs": [
         st.Page("pages/01_Project_Setup.py", title="Project Setup", icon="\U0001f4cb"),
-        st.Page("pages/02_Wind_Parameters.py", title="Wind Parameters", icon="\U0001f300"),
+        st.Page("pages/02_Soil_Profile.py", title="Soil Profile", icon="\U0001f3d4"),
+        st.Page("pages/03_Wind_Parameters.py", title="Wind Parameters", icon="\U0001f300"),
     ],
     "Design": [
-        st.Page("pages/03_Chain_Link_Design.py", title="Chain Link Design", icon="\u26d3"),
-        st.Page("pages/04_Wood_Fence_Design.py", title="Wood Fence Design", icon="\U0001f333"),
+        st.Page("pages/04_Chain_Link_Design.py", title="Chain Link Design", icon="\u26d3"),
+        st.Page("pages/05_Wood_Fence_Design.py", title="Wood Fence Design", icon="\U0001f333"),
     ],
     "Analysis": [
-        st.Page("pages/05_Post_Spacing.py", title="Post Spacing (CLFMI)", icon="\U0001f4cf"),
-        st.Page("pages/06_Footing_Design.py", title="Footing Design", icon="\U0001f9f1"),
-        st.Page("pages/08_Optimizer.py", title="Optimizer", icon="\u2699"),
+        st.Page("pages/06_Post_Spacing.py", title="Post Spacing (CLFMI)", icon="\U0001f4cf"),
+        st.Page("pages/07_Footing_Design.py", title="Footing Design", icon="\U0001f9f1"),
+        st.Page("pages/09_Optimizer.py", title="Optimizer", icon="\u2699"),
     ],
     "Planning": [
-        st.Page("pages/09_Fence_Run.py", title="Fence Run Planner", icon="\U0001f4d0"),
+        st.Page("pages/10_Fence_Run.py", title="Fence Run Planner", icon="\U0001f4d0"),
     ],
     "Output": [
-        st.Page("pages/07_Export_Report.py", title="Export Report", icon="\U0001f4c4"),
+        st.Page("pages/11_Export_Report.py", title="Export Report", icon="\U0001f4c4"),
     ],
 }
 

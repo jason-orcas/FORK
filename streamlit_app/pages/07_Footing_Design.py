@@ -15,6 +15,12 @@ import pandas as pd
 
 from core.models import FootingInput, IBCEdition
 from core.footing import calculate_footing_depth_ibc, calculate_footing_depth_astm_f567
+from core.soil import SoilProfile, build_soil_layer_from_dict
+from core.soil_lateral import (
+    S1DerivationMethod,
+    weighted_s1_for_footing,
+    describe_s1_derivation,
+)
 
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
 
@@ -86,32 +92,117 @@ with col1:
         key="ft_actual_depth", min_value=0.5, max_value=15.0, step=0.25)
 
 if ft_method == "IBC":
+    # Soil input mode toggle — Simple or Soil Profile
+    st.radio(
+        "Soil Input Mode",
+        ["Simple", "Soil Profile"],
+        key="ft_soil_input_mode",
+        horizontal=True,
+        help="Simple: manual lateral bearing entry or IBC Table 1806.2 lookup.\n"
+             "Soil Profile: derive S1 from a layered soil model (define on Soil Profile page).",
+    )
+
     with col2:
-        # Soil type selector
-        soil_names = ["Custom"] + list(_SOIL_TYPES.keys())
-        st.selectbox("Soil Type (IBC Table 1806.2)", soil_names, key="ft_soil_choice",
-            help="Select soil type to auto-fill lateral bearing pressure, or choose Custom.")
-        soil_choice = st.session_state.ft_soil_choice
+        if st.session_state.ft_soil_input_mode == "Simple":
+            # --- Simple mode: IBC dropdown + manual S1 (original behavior) ---
+            soil_names = ["Custom"] + list(_SOIL_TYPES.keys())
+            st.selectbox("Soil Type (IBC Table 1806.2)", soil_names, key="ft_soil_choice",
+                help="Select soil type to auto-fill lateral bearing pressure, or choose Custom.")
+            soil_choice = st.session_state.ft_soil_choice
 
-        if soil_choice != "Custom":
-            base_pressure = _SOIL_TYPES[soil_choice]
-            st.caption(f"Base lateral bearing: {base_pressure} psf/ft")
+            if soil_choice != "Custom":
+                base_pressure = _SOIL_TYPES[soil_choice]
+                st.caption(f"Base lateral bearing: {base_pressure} psf/ft")
+            else:
+                base_pressure = None
+
+            st.checkbox("Apply 2x for isolated fence posts (IBC 1806.3.4)", key="ft_apply_2x",
+                help="IBC 1806.3.4: Isolated poles not adversely affected by 1/2\" "
+                     "ground motion from short-term lateral loads may use 2x lateral bearing.")
+            apply_2x = st.session_state.ft_apply_2x
+
+            if base_pressure is not None:
+                effective = base_pressure * (2 if apply_2x else 1)
+                st.session_state.ft_soil_bearing = float(effective)
+                st.caption(f"Effective lateral bearing: **{effective} psf**"
+                           + (" (2x applied)" if apply_2x else ""))
+
+            st.number_input("Allowable Lateral Soil Bearing (psf)",
+                key="ft_soil_bearing", min_value=50.0, max_value=5000.0, step=25.0)
+
         else:
-            base_pressure = None
+            # --- Soil Profile mode: compute S1 from layered profile ---
+            soil_layers = st.session_state.get("soil_layers", [])
+            if not soil_layers:
+                st.warning(
+                    "No soil layers defined. Go to the **Soil Profile** page "
+                    "(under Inputs) to define your soil stratigraphy, then return here."
+                )
+                st.session_state.ft_soil_bearing = 100.0
+            else:
+                st.radio(
+                    "S1 Derivation Method",
+                    ["Engineering properties", "IBC Table 1806.2"],
+                    key="ft_profile_derivation",
+                    horizontal=True,
+                    help="Engineering: Rankine Kp for sand, 9*cu/10 for clay, using SPT "
+                         "correlations if phi/cu not entered.\n"
+                         "IBC Table: maps SoilType to presumptive values from IBC 1806.2.",
+                )
 
-        st.checkbox("Apply 2x for isolated fence posts (IBC 1806.3.4)", key="ft_apply_2x",
-            help="IBC 1806.3.4: Isolated poles not adversely affected by 1/2\" "
-                 "ground motion from short-term lateral loads may use 2x lateral bearing.")
-        apply_2x = st.session_state.ft_apply_2x
+                # Build the profile and compute S1
+                try:
+                    layer_objs = [build_soil_layer_from_dict(ld) for ld in soil_layers]
+                    profile = SoilProfile(
+                        layers=layer_objs,
+                        water_table_depth=st.session_state.get("water_table_depth"),
+                    )
+                    method = (
+                        S1DerivationMethod.ENGINEERING
+                        if st.session_state.ft_profile_derivation == "Engineering properties"
+                        else S1DerivationMethod.IBC_TABLE
+                    )
+                    footing_depth = st.session_state.get("ft_actual_depth", 4.0)
+                    s1_computed = weighted_s1_for_footing(profile, footing_depth, method)
 
-        if base_pressure is not None:
-            effective = base_pressure * (2 if apply_2x else 1)
-            st.session_state.ft_soil_bearing = float(effective)
-            st.caption(f"Effective lateral bearing: **{effective} psf**"
-                       + (" (2x applied)" if apply_2x else ""))
+                    # Optional 2x multiplier still applies
+                    st.checkbox(
+                        "Apply 2x for isolated fence posts (IBC 1806.3.4)",
+                        key="ft_apply_2x",
+                    )
+                    apply_2x = st.session_state.ft_apply_2x
+                    s1_effective = s1_computed * (2 if apply_2x else 1)
+                    st.session_state.ft_soil_bearing = float(s1_effective)
 
-        st.number_input("Allowable Lateral Soil Bearing (psf)",
-            key="ft_soil_bearing", min_value=50.0, max_value=5000.0, step=25.0)
+                    st.metric(
+                        "Computed Lateral Bearing S1",
+                        f"{s1_effective:.0f} psf/ft",
+                        help="Weighted average across the footing depth."
+                             + (" (2x applied)" if apply_2x else ""),
+                    )
+
+                    # Show per-layer breakdown
+                    with st.expander("S1 Derivation Breakdown"):
+                        rows = describe_s1_derivation(profile, footing_depth, method)
+                        if rows:
+                            df = pd.DataFrame([
+                                {
+                                    "Layer (ft)": f"{r['top_ft']:.1f} - {r['bot_ft']:.1f}",
+                                    "Soil": r["soil_type"],
+                                    "Thickness (ft)": f"{r['thickness_ft']:.2f}",
+                                    "S1 (psf/ft)": f"{r['s1_psf_per_ft']:.0f}",
+                                    "Weight": f"{r['weight_fraction']:.1%}",
+                                }
+                                for r in rows
+                            ])
+                            st.dataframe(df, width="stretch", hide_index=True)
+                        st.caption(
+                            "S1 is computed per layer and weighted by thickness "
+                            "within the footing embedment depth."
+                        )
+                except Exception as e:
+                    st.error(f"Failed to compute S1 from profile: {e}")
+                    st.session_state.ft_soil_bearing = 100.0
 
         st.number_input("Footing Diameter (ft)",
             key="ft_footing_diam", min_value=0.5, max_value=5.0, step=0.25,

@@ -34,6 +34,16 @@ SAVEABLE_KEYS = [
     # Footing
     "ft_method", "ft_soil_bearing", "ft_footing_diam",
     "ft_fence_height", "ft_actual_depth",
+    "ft_soil_input_mode", "ft_profile_derivation",
+    "ft_soil_choice", "ft_apply_2x",
+    "ft_line_fence_height", "ft_line_actual_depth",
+    "ft_post_calc_type", "ft_method_label",
+    # Soil profile
+    "soil_layers", "water_table_depth",
+    "axial_zones", "use_axial_zones",
+    # Frost
+    "frost_depth_in", "frost_method", "frost_region",
+    "frost_depth_manual", "tau_af_psi",
     # Optimizer
     "opt_fence_height", "opt_wind_speed", "opt_exposure", "opt_ice",
     "opt_wire_gauge", "opt_mesh_size", "opt_mesh_weight",
