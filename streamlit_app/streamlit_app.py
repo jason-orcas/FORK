@@ -147,7 +147,73 @@ def init_session_state():
             st.session_state[key] = val
 
 
+def persist_widget_state():
+    """Re-commit widget-keyed session state to prevent Streamlit from
+    garbage-collecting widget values on multi-page navigation.
+
+    Streamlit's MPA behavior can drop widget state for widgets that aren't
+    currently rendered. Re-assigning the value to itself forces Streamlit
+    to keep the entry around.
+
+    This MUST run on every script rerun (before pg.run()), not just once.
+    """
+    persistent_keys = [
+        # Project info
+        "project_name", "project_location", "project_number",
+        "designer", "reviewer", "project_notes",
+        "asce_edition", "ibc_edition",
+        # Wind parameters
+        "wind_speed", "exposure_category", "risk_category",
+        "Kd", "Kzt", "Kz", "G", "Cf", "Ke",
+        # Chain link
+        "cl_post_type_label", "cl_post_group", "cl_trade_size",
+        "cl_post_height", "cl_post_spacing",
+        "cl_wire_gauge", "cl_mesh_size", "cl_mesh_weight", "cl_fos",
+        "cl_gate_leaf_length", "cl_gate_leaf_height",
+        "cl_gate_frame_diam", "cl_gate_frame_weight",
+        # Wood
+        "wood_post_type_label", "wood_species",
+        "wood_post_diam", "wood_post_height", "wood_post_spacing",
+        "wood_post_weight", "wood_wire_diam", "wood_mesh_size",
+        "wood_mesh_weight", "wood_fos", "wood_defl_choice",
+        "wood_gate_leaf_length", "wood_gate_leaf_height",
+        "wood_gate_frame_diam", "wood_gate_frame_weight",
+        # Spacing
+        "sp_fence_height", "sp_post_group", "sp_post_od",
+        "sp_wire_gauge", "sp_mesh_size", "sp_wind_speed",
+        "sp_exposure", "sp_ice", "sp_actual_spacing",
+        "sp_use_override", "sp_override_val", "sp_post_label",
+        # Footing
+        "ft_method_label", "ft_soil_bearing", "ft_footing_diam",
+        "ft_fence_height", "ft_actual_depth",
+        "ft_soil_input_mode", "ft_profile_derivation",
+        "ft_soil_choice", "ft_apply_2x",
+        "ft_line_fence_height", "ft_line_actual_depth",
+        "ft_post_calc_type",
+        # Soil profile
+        "soil_layers", "water_table_depth",
+        "axial_zones", "use_axial_zones",
+        # Frost
+        "frost_depth_in", "frost_method", "frost_region",
+        "frost_depth_manual", "tau_af_psi",
+        # Fence Run
+        "fr_total_length", "fr_post_spacing", "fr_num_corners",
+        "fr_num_gates", "fr_post_height", "fr_post_weight",
+        "fr_footing_diam", "fr_fabric_height", "fr_has_top_rail",
+        "fr_depth_line", "fr_depth_pull", "fr_depth_gate",
+        # Optimizer
+        "opt_fence_type_label", "opt_fence_height", "opt_wind_speed",
+        "opt_exposure", "opt_ice", "opt_wire_gauge", "opt_mesh_size",
+        "opt_mesh_weight", "opt_wire_diam", "opt_wood_mesh_size",
+        "opt_wood_spacing", "opt_soil_bearing", "opt_footing_diam", "opt_fos",
+    ]
+    for key in persistent_keys:
+        if key in st.session_state:
+            st.session_state[key] = st.session_state[key]
+
+
 init_session_state()
+persist_widget_state()
 
 # Navigation
 pages = {
