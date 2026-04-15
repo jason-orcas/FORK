@@ -111,8 +111,8 @@ if st.button("Optimize", type="primary"):
             st.error("**No post combinations pass all checks.**")
             with st.expander("Why did all combinations fail?", expanded=True):
                 # Group failure reasons
-                overstressed = [r for r in results if "overstressed" in r.failure_reason.lower()]
-                moment_fail = [r for r in results if "moment demand" in r.failure_reason.lower()]
+                overstressed = [r for r in results if "overstressed" in getattr(r, "failure_reason", "").lower()]
+                moment_fail = [r for r in results if "moment demand" in getattr(r, "failure_reason", "").lower()]
 
                 if overstressed:
                     st.write(
@@ -162,7 +162,7 @@ if st.button("Optimize", type="primary"):
                 "Max Spacing S' (ft)": f"{r.max_spacing:.1f}" if r.max_spacing > 0 else "-",
                 "Moment Ratio": f"{r.moment_ratio:.3f}" if r.moment_ratio > 0 else "-",
                 "Footing Depth (ft)": f"{r.footing_depth_ft:.2f}" if r.footing_depth_ft > 0 else "-",
-                "Notes": r.failure_reason if not r.passes else "",
+                "Notes": getattr(r, "failure_reason", "") if not r.passes else "",
             })
 
         df = pd.DataFrame(rows)
@@ -238,7 +238,7 @@ if st.button("Optimize", type="primary"):
                 "Shear Ratio": f"{r.shear_ratio:.3f}",
                 "Deflection (in)": f"{r.deflection_in:.3f}",
                 "Footing Depth (ft)": f"{r.footing_depth_ft:.2f}",
-                "Notes": r.failure_reason if not r.passes else "",
+                "Notes": getattr(r, "failure_reason", "") if not r.passes else "",
             })
 
         df = pd.DataFrame(rows)
