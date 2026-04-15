@@ -51,6 +51,17 @@ def build_project_json() -> str:
     return json.dumps(data, indent=2, default=str)
 
 
+# Apply pending loaded project BEFORE any widgets render
+if "_pending_project_load" in st.session_state:
+    pending = st.session_state.pop("_pending_project_load")
+    for key, value in pending.items():
+        if key in SAVEABLE_KEYS:
+            st.session_state[key] = value
+    # Clear stale results
+    for rk in ["wind_result", "cl_result", "wood_result",
+               "spacing_result", "footing_result"]:
+        st.session_state[rk] = None
+
 st.header("Project Setup")
 
 col1, col2 = st.columns(2)
@@ -107,14 +118,9 @@ with load_col:
         if st.session_state.get("_project_upload_key") != cache_key:
             try:
                 data = json.loads(uploaded.read())
-                for key in SAVEABLE_KEYS:
-                    if key in data:
-                        st.session_state[key] = data[key]
+                # Stash for application on next rerun (before widgets render)
+                st.session_state["_pending_project_load"] = data
                 st.session_state["_project_upload_key"] = cache_key
-                # Clear previous results since inputs changed
-                for rk in ["wind_result", "cl_result", "wood_result",
-                           "spacing_result", "footing_result"]:
-                    st.session_state[rk] = None
                 st.success(f"Loaded project: {data.get('project_name', uploaded.name)}")
                 st.rerun()
             except (json.JSONDecodeError, Exception) as e:
